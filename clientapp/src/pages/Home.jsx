@@ -1,14 +1,25 @@
-import React from 'react';
-import MovieSearch from '../features/movies/MovieSearch';
+import { useState } from 'react';
 import MovieList from '../features/movies/MovieList';
 
-const Home = () => {
+function Home() {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const input = e.target.elements.search.value;
+    setSearchTerm(input);
+  };
+
   return (
-    <main className="p-4">
-      <MovieSearch />
-      <MovieList />
-    </main>
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input name="search" placeholder="Search movies..." />
+        <button type="submit">Search</button>
+      </form>
+
+      <MovieList searchTerm={searchTerm} />
+    </div>
   );
-};
+}
 
 export default Home;
