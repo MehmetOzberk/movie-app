@@ -1,9 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const Header = () => (
-  <header className="bg-gray-800 text-white p-4 mb-6">
-    <h1 className="text-2xl font-bold">My Movie App</h1>
-  </header>
-);
+function Header({ onSearch }) {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSearch(searchTerm);
+  };
+
+  return (
+    <header>
+      <h1 ><a href="Home.jsx">Movie App</a> | <a href="Home.jsx">Favorites</a></h1>
+      <form onSubmit={handleSubmit} style={{ marginLeft: 'auto' }}>
+        <input
+          type="text"
+          placeholder="Search movies..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{ padding: '6px 10px', borderRadius: '4px', border: '1px solid #ccc' }}
+        />
+        <button type="submit" style={{ fontcolor: '#black', backgroundColor: '#EEEEEE', border: 'none', borderRadius: '4px', marginLeft: '8px', padding: '6px 12px' }}>
+          Search
+        </button>
+      </form>
+    </header>
+  );
+}
 
 export default Header;

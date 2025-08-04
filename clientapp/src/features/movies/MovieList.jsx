@@ -1,50 +1,37 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchMovies, clearMovies } from './MovieSlice';
 import MovieCard from '../../components/MovieCard';
-
+import './MovieList.css'; 
 function MovieList({ searchTerm }) {
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const { movies, loading, error } = useSelector(state => state.movies);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!searchTerm) {
-      setMovies([]);
-      setErrorMessage('');
+      dispatch(fetchMovies(''));
       return;
     }
 
-    setLoading(true);
-    setErrorMessage('');
-
-    axios.get(`/api/movies/search`, { params: { search: searchTerm } })
-      .then(response => {
-        const data = response.data; // assuming backend returns parsed JSON object
-
-        if (!data.Search || data.Search.length === 0) {
-          setMovies([]);
-          setErrorMessage('No movies found for your search.');
-        } else {
-          setMovies(data.Search);
-          setErrorMessage('');
-        }
-      })
-      .catch(err => {
-        console.error("API error:", err);
-        setErrorMessage('Something went wrong. Please try again.');
-      })
-      .finally(() => setLoading(false));
-  }, [searchTerm]);
+    dispatch(fetchMovies(searchTerm));
+  }, [searchTerm, dispatch]);
 
   if (loading) return <p>Loading...</p>;
 
-  if (errorMessage) return <p style={{ color: 'red' }}>{errorMessage}</p>;
+  if (error) return <p style={{ color: 'red' }}>{error}</p>;
+
+  const title = searchTerm ? `Search Results for "${searchTerm}"` : 'Popular Movies';
 
   return (
-    <div className="movie-list">
-      {movies.map(movie => (
-        <MovieCard key={movie.imdbID} movie={movie} />
-      ))}
+    <div>
+      <h2 style={{ textAlign: 'center', margin: '20px 0', color: '#333' }}>
+        {title}
+      </h2>
+      <div className="movie-list">
+        {movies.map(movie => (
+          <MovieCard key={movie.imdbID || movie.id} movie={movie} />
+        ))}
+      </div>
     </div>
   );
 }

@@ -1,11 +1,19 @@
 var builder = WebApplication.CreateBuilder(args);
 
-
+// Validate TMDB API key at startup
+var tmdbApiKey = builder.Configuration["Tmdb:ApiKey"];
+if (string.IsNullOrEmpty(tmdbApiKey))
+{
+    throw new InvalidOperationException("TMDB API key is not configured. Please add it to appsettings.json or environment variables.");
+}
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddControllers();
-
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null; 
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

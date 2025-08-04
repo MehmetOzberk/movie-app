@@ -1,22 +1,17 @@
 import { useState } from 'react';
 import MovieList from '../features/movies/MovieList';
+import Header from '../components/Header';
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const input = e.target.elements.search.value;
-    setSearchTerm(input);
+  const handleSearch = (term) => {
+    setSearchTerm(term);
   };
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <input name="search" placeholder="Search movies..." />
-        <button type="submit">Search</button>
-      </form>
-
+      <Header onSearch={handleSearch} />
       <MovieList searchTerm={searchTerm} />
     </div>
   );
